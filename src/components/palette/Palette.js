@@ -1,16 +1,12 @@
-import React, { useState, useRef } from 'react';
-import { Stage, Layer, Text } from 'react-konva';
-import Konva from 'konva';
+import React from 'react';
+import { Stage, Layer } from 'react-konva';
 
 import { useDrawing } from '../../utils/lines';
 
 const Palette = () => {
-	const {
-		layerRef,
-		onStartDrawing,
-		onDrawing,
-		onFinishDrawing
-	} = useDrawing();
+	const { layerRef, onStartDrawing, onDrawing, onFinishDrawing } = useDrawing(
+		true
+	);
 
 	return (
 		<Stage
@@ -24,9 +20,7 @@ const Palette = () => {
 			onTouchEnd={onFinishDrawing}
 			onMouseLeave={onFinishDrawing}
 		>
-			<Layer ref={layerRef}>
-				<Text text='this is sample text' />
-			</Layer>
+			<Layer ref={layerRef} />
 		</Stage>
 	);
 };

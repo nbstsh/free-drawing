@@ -1,7 +1,7 @@
-
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Konva from 'konva';
 import uuidv4 from 'uuidv4';
+import { uploadPoints, onPointsSnapshot } from './points';
 
 const LINE_OPTION = {
 	x: 0,
@@ -28,12 +28,6 @@ const addLine = (id, line) => {
 	lines[id] = line;
 };
 
-const drawLine = (id, points) => {
-	const line = findLine(id);
-	line.points(points);
-	line.draw();
-};
-
 const addPoints = (id, x, y) => {
 	const line = findLine(id);
 
@@ -44,32 +38,48 @@ const addPoints = (id, x, y) => {
 	line.draw();
 };
 
-export const useDrawing = () => {
-  const drawingLineIdRef = useRef(null);
+export const useDrawing = (needUpload = false) => {
+	const drawingLineIdRef = useRef(null);
 	const layerRef = useRef(null);
 	const [isDrawing, setIsDrawing] = useState(false);
 
-  const getDrawingLine = () => {
-    return findLine(drawingLineIdRef.current);
-  }
+	const getDrawingLine = () => {
+		return findLine(drawingLineIdRef.current);
+	};
+
+	useEffect(() => {
+		if (!needUpload) return;
+
+		const handler = documents => {
+			documents.forEach(({ id, x, y }) => {
+				if (!lines[id]) {
+					const line = generateLine();
+					addLine(id, line);
+					addLineToLayer(line);
+				}
+
+				addPoints(id, x, y);
+			});
+		};
+		return onPointsSnapshot(handler);
+	}, [needUpload]);
 
 	const initLine = () => {
 		const line = generateLine();
 		const id = uuidv4();
 		addLine(id, line);
-    drawingLineIdRef.current = id;
+		drawingLineIdRef.current = id;
 	};
 
-	const addLineToLayer = () => {
+	const addLineToLayer = line => {
 		if (!layerRef.current) return;
-
-		layerRef.current.add(getDrawingLine());
+		layerRef.current.add(line);
 	};
 
 	const onStartDrawing = () => {
 		setIsDrawing(true);
 		initLine();
-		addLineToLayer();
+		addLineToLayer(getDrawingLine());
 	};
 
 	const onDrawing = e => {
@@ -77,8 +87,11 @@ export const useDrawing = () => {
 		if (!getDrawingLine()) return;
 
 		const { x, y } = e.target.getPointerPosition();
-    addPoints(drawingLineIdRef.current, x, y);
-	}
+		const id = drawingLineIdRef.current;
+		addPoints(id, x, y);
+
+		if (needUpload) uploadPoints(id, x, y);
+	};
 
 	const onFinishDrawing = () => {
 		setIsDrawing(false);

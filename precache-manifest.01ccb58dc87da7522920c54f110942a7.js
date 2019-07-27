@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c5dc5185c379b10f3eead68cc1c6369a",
+    "revision": "4b858d13ce4ea6ce6a30bf450f33cbd8",
     "url": "/free-drawing/index.html"
   },
   {
-    "revision": "efcbf2b9fa6e73ba03b2",
+    "revision": "7dddc8c999663c08a911",
     "url": "/free-drawing/static/css/main.52140339.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/free-drawing/static/js/2.37e9be1f.chunk.js"
   },
   {
-    "revision": "efcbf2b9fa6e73ba03b2",
-    "url": "/free-drawing/static/js/main.adcb7446.chunk.js"
+    "revision": "7dddc8c999663c08a911",
+    "url": "/free-drawing/static/js/main.b0f53bbd.chunk.js"
   },
   {
     "revision": "3dcd7acdf03c403c4138",

@@ -3,18 +3,21 @@ import Konva from 'konva';
 import uuidv4 from 'uuidv4';
 import { uploadPoints, onPointsSnapshot } from './points';
 
+const randomColor = Konva.Util.getRandomColor();
+
 const LINE_OPTION = {
 	x: 0,
 	y: 0,
 	points: [],
-	stroke: 'red',
+	stroke: randomColor,
 	tension: 0
 };
 
 const lines = {};
 
-const generateLine = () => {
-	return new Konva.Line(LINE_OPTION);
+const generateLine = color => {
+	const options = color ? { ...LINE_OPTION, stroke: color } : LINE_OPTION;
+	return new Konva.Line(options);
 };
 
 const findLine = id => {
@@ -51,9 +54,9 @@ export const useDrawing = (needUpload = false) => {
 		if (!needUpload) return;
 
 		const handler = documents => {
-			documents.forEach(({ id, x, y }) => {
+			documents.forEach(({ id, x, y, color }) => {
 				if (!lines[id]) {
-					const line = generateLine();
+					const line = generateLine(color);
 					addLine(id, line);
 					addLineToLayer(line);
 				}
@@ -90,7 +93,7 @@ export const useDrawing = (needUpload = false) => {
 		const id = drawingLineIdRef.current;
 		addPoints(id, x, y);
 
-		if (needUpload) uploadPoints(id, x, y);
+		if (needUpload) uploadPoints(id, x, y, randomColor);
 	};
 
 	const onFinishDrawing = () => {

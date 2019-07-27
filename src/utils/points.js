@@ -10,7 +10,7 @@ const getDocRef = pointId => {
 	return colRef.doc(pointId);
 };
 
-export const uploadPoints = async (id, x, y) => {
+export const uploadPoints = async (id, x, y, color) => {
 	if (!id) throw new Error('Id must be provided.');
 
 	const isValidPositions = typeof x === 'number' && typeof y === 'number';
@@ -23,7 +23,8 @@ export const uploadPoints = async (id, x, y) => {
 	await docRef.set({
 		userId: user.uid,
 		x,
-		y
+		y,
+		color
 	});
 };
 
